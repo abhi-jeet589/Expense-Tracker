@@ -1,0 +1,22 @@
+{{ define "transaction_list" }}
+<div id="transaction-list">
+  {{ if .Transactions }}
+  <ul class="transaction-list">
+    {{ range .Transactions }}
+    <li class="transaction-item">
+      <div class="transaction-copy">
+        <p class="transaction-amount">{{ .Amount }}</p>
+        <p class="transaction-slug">ref {{ .Slug }}</p>
+      </div>
+      <span class="transaction-type transaction-type-{{ .TypeClass }}">{{ .Type }}</span>
+    </li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <div class="empty-state">
+    <p>No transactions yet.</p>
+    <p>Add one above to start tracking expenses.</p>
+  </div>
+  {{ end }}
+</div>
+{{ end }}

@@ -1,0 +1,122 @@
+{{ define "transactions_page" }}
+<!doctype html>
+<html lang="en">
+<head>
+  {{ template "base_head" . }}
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">ET</div>
+        <div>
+          <p class="brand-label">Expense Tracker</p>
+          <p class="brand-copy">Personal finance workspace</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Primary">
+        <a class="nav-item is-active" href="/app/transactions">
+          <span class="nav-icon">•</span>
+          <span>Transactions</span>
+        </a>
+        <button class="nav-item" type="button" disabled>
+          <span class="nav-icon">•</span>
+          <span>Analytics</span>
+          <span class="nav-badge">Soon</span>
+        </button>
+      </nav>
+
+      <section class="sidebar-card">
+        <p class="sidebar-card-label">Roadmap</p>
+        <h2>Analytics cards live here next.</h2>
+        <p class="sidebar-card-copy">This shell is ready for charts, summaries, and account-level insights without changing the overall layout.</p>
+      </section>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-header">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1>Transactions</h1>
+          <p class="hero-copy">A clean workspace for entering transactions now, with room for analytics and reporting cards later.</p>
+        </div>
+        <div class="header-chip">Overview</div>
+      </header>
+
+      <section class="overview-grid" aria-label="Overview">
+        <article class="overview-card">
+          <p class="overview-label">Records</p>
+          <p id="hero-transaction-count" class="overview-value">0</p>
+          <p class="overview-copy">Loaded from your API endpoint.</p>
+        </article>
+        <article class="overview-card">
+          <p class="overview-label">Workspace</p>
+          <p class="overview-value">Transactions</p>
+          <p class="overview-copy">The current tab is focused on transaction capture and review.</p>
+        </article>
+        <article class="overview-card is-muted">
+          <p class="overview-label">Next up</p>
+          <p class="overview-value">Analytics</p>
+          <p class="overview-copy">Use this area later for spend by category, balances, and trends.</p>
+        </article>
+      </section>
+
+      <section
+        id="transactions-app"
+        class="workspace-grid"
+        data-list-endpoint="{{ .ListEndpoint }}"
+        data-create-endpoint="{{ .CreateEndpoint }}"
+      >
+        <section class="panel-card form-card">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">Quick add</div>
+              <h2>Add a transaction</h2>
+            </div>
+          </div>
+          <p class="section-copy">Capture a transaction with a name, amount, and type.</p>
+          <div id="form-error" class="form-error" hidden></div>
+          <form id="transaction-form" class="transaction-form">
+            <label>
+              <span>Name</span>
+              <input type="text" name="name" placeholder="Groceries" autocomplete="off" required>
+            </label>
+            <label>
+              <span>Amount</span>
+              <input type="text" name="amount" placeholder="24.99" autocomplete="off" required>
+            </label>
+            <label>
+              <span>Type</span>
+              <select name="type">
+                <option value="DEBIT">Debit</option>
+                <option value="CREDIT">Credit</option>
+              </select>
+            </label>
+            <button type="submit">Save transaction</button>
+          </form>
+          <p class="section-hint">Use a clear name so transactions are easy to identify later.</p>
+        </section>
+
+        <section class="panel-card list-card">
+          <div class="list-header">
+            <div>
+              <div class="section-kicker">Ledger</div>
+              <h2>Recent transactions</h2>
+            </div>
+            <div id="transaction-count" class="transaction-count">0</div>
+          </div>
+
+          <div id="status-banner" class="status-banner is-loading">Loading transactions...</div>
+          <ul id="transaction-list" class="transaction-list" hidden></ul>
+          <div id="empty-state" class="empty-state" hidden>
+            <p>No transactions yet.</p>
+            <p>Create one from the form and it will appear here.</p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+{{ end }}
