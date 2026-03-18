@@ -1,0 +1,44 @@
+{{ define "transactions_panel" }}
+<div id="transactions-panel" class="panel-stack">
+  <section class="card form-card">
+    <div class="section-kicker">Quick add</div>
+    <h2>Add a transaction</h2>
+    <p class="section-copy">A tiny HTMX form that posts back to Gin and refreshes the list in place.</p>
+    {{ if .Error }}
+    <div class="form-error">{{ .Error }}</div>
+    {{ end }}
+    <form
+      class="transaction-form"
+      hx-post="{{ .CreateEndpoint }}"
+      hx-target="#transactions-panel"
+      hx-swap="outerHTML"
+      hx-on::after-request="if(event.detail.successful) this.reset()"
+    >
+      <label>
+        <span>Amount</span>
+        <input type="text" name="amount" placeholder="24.99" value="{{ .Form.Amount }}" required>
+      </label>
+      <label>
+        <span>Type</span>
+        <select name="type">
+          <option value="DEBIT" {{ if eq .Form.Type "DEBIT" }}selected{{ end }}>Debit</option>
+          <option value="CREDIT" {{ if eq .Form.Type "CREDIT" }}selected{{ end }}>Credit</option>
+        </select>
+      </label>
+      <button type="submit">Save transaction</button>
+    </form>
+    <p class="section-hint">Use values like <code>12.50</code> or <code>240</code>.</p>
+  </section>
+
+  <section class="card list-card">
+    <div class="list-header">
+      <div>
+        <div class="section-kicker">Live list</div>
+        <h2>Recent transactions</h2>
+      </div>
+      <div class="transaction-count">{{ len .Transactions }}</div>
+    </div>
+    {{ template "transaction_list" . }}
+  </section>
+</div>
+{{ end }}
