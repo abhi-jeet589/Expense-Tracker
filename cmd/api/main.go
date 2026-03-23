@@ -2,12 +2,15 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
 	"github.com/abhi-jeet589/Expense-Tracker/internal/models"
 	"github.com/abhi-jeet589/Expense-Tracker/internal/routes"
+	"github.com/abhi-jeet589/Expense-Tracker/internal/webassets"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -44,8 +47,11 @@ func openDB() *gorm.DB {
 }
 
 func loadTemplates() *template.Template {
-	tmpl := template.Must(template.ParseGlob("templates/*.tmpl"))
-	template.Must(tmpl.ParseGlob("templates/transactions/*.tmpl"))
+	tmpl := template.Must(template.New("").ParseFS(
+		webassets.FS,
+		"templates/*.tmpl",
+		"templates/transactions/*.tmpl",
+	))
 	return tmpl
 }
 
@@ -58,11 +64,15 @@ func DbInjector(db *gorm.DB) gin.HandlerFunc {
 
 func main() {
 	db := openDB()
+	staticFS, err := fs.Sub(webassets.FS, "static")
+	if err != nil {
+		log.Fatal("error loading static assets: ", err)
+	}
 
 	router := gin.Default()
 	router.Use(DbInjector(db))
 	router.SetHTMLTemplate(loadTemplates())
-	router.Static("/static", "./static")
+	router.StaticFS("/static", http.FS(staticFS))
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
