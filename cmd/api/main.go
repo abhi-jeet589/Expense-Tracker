@@ -73,7 +73,12 @@ func main() {
 	routes.RegisterAPIRoutes(router.Group("/api"))
 	routes.RegisterWebRoutes(router)
 
-	if err := router.Run(); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	if err := router.Run(":" + port); err != nil {
 		log.Fatal("error starting server: ", err)
 	}
 }
